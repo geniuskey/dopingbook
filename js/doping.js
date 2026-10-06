@@ -496,13 +496,16 @@
       if (Css > L) L += (Css - L) * (1 - Math.exp(-dt / ta));
       else L += (Css - L) * (1 - Math.exp(-dt / (40 * ta)));
       if (Lmeta > 0) { Lmeta += (Math.min(Lmeta, Math.max(Css, L)) - Lmeta) * (1 - Math.exp(-dt / (DP.deactTau(T)))); }
-      // 확산 계수(격자점마다)
+      // 확산 계수(격자점마다). 고용 한계를 넘는 몫은 덩어리(클러스터)로 묶여 움직이지 않는다고 보고,
+      // 움직이는 몫(활성 ÷ 화학)만큼만 확산 계수를 준다. 재성장 전 비정질 영역은 움직이지 않는다.
       const Dv = new Float64Array(n);
+      const aDepth = amorph > 0 && regrown < 1 ? amorph * (1 - regrown) : 0;
       for (let j = 0; j < n; j++) {
         const act = Math.min(c[j], Math.max(L, Lmeta));
         const net = Math.max(0, act - bg);
         const r = o.fermi === false ? 1 : net / 2 + Math.sqrt((net * net) / 4 + nI * nI);
-        Dv[j] = DP.D(dop, T, r / nI) * (1 + S);
+        const mob = xs[j] < aDepth ? 0 : c[j] > 0 ? act / c[j] : 1;
+        Dv[j] = DP.D(dop, T, r / nI) * (1 + S) * mob;
       }
       const Dmean = DP.D(dop, T);
       Dt += Dmean * dt; DtTED += Dmean * S * dt;
@@ -543,7 +546,7 @@
   DP.actTau = (tc) => 0.05 * Math.exp((4.5 / kB) * (1 / K(tc) - 1 / K(1000)));
   DP.deactTau = (tc) => 30 * Math.exp((3.2 / kB) * (1 / K(tc) - 1 / K(900)));
   DP.tedTau = (tc) => 0.8 * Math.exp((3.5 / kB) * (1 / K(tc) - 1 / K(1000)));
-  DP.tedS0 = (tc, dose) => 4 * Math.min(10, dose / 1e14) * Math.exp((2.0 / kB) * (1 / K(tc) - 1 / K(1000)));
+  DP.tedS0 = (tc, dose) => 1 * Math.min(10, dose / 1e14) * Math.exp((1.5 / kB) * (1 / K(tc) - 1 / K(1000)));
 
   /** 접합 깊이: 화학 농도가 배경과 같아지는 가장 깊은 지점 (nm). 배경 0이면 1e18 기준 */
   DP.junction = function (xs, c, bg) {
