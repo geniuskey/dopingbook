@@ -239,7 +239,8 @@
       series.push({ data: Array.from(xs, (x, i) => [x, r.c[i]]), color: DB.color("p-type"), width: 2.6 });
       DB.chart(ctx, bx, { x: [0, 300], y: [1e16, 1e22], logY: true, xLabel: "깊이 (nm)", yLabel: "붕소 (cm⁻³)", yTicks: [1e16, 1e18, 1e20, 1e22], yFmt: (v) => "10" + sup(Math.round(Math.log10(v))),
         series, hlines: [{ y: ni, color: P.accent, label: "nᵢ(" + T + " °C)" }, { y: 1e17, color: P.faint, label: "바탕" }] });
-      txt(ctx, rN ? "굵은 선: 페르미 효과 · 긴 점선: 진성 확산만 · 짧은 점선: 주입 직후" : "굵은 선: 진성 확산만 · 점선: 주입 직후", bx.x + bx.w - 4, bx.y + 12, P.dim, "right", "middle", 11);
+      if (w > 520) txt(ctx, rN ? "굵은 선: 페르미 효과 · 긴 점선: 진성 확산만 · 짧은 점선: 주입 직후" : "굵은 선: 진성 확산만 · 점선: 주입 직후", bx.x + bx.w - 4, bx.y + 12, P.dim, "right", "middle", 11);
+      else txt(ctx, rN ? "굵은: 페르미 · 긴 점선: 진성" : "굵은: 진성 확산", bx.x + bx.w - 4, bx.y + 12, P.dim, "right", "middle", 10);
       let pk = 0; im.c.forEach((v) => (pk = Math.max(pk, v)));
       const act = Math.min(pk, DP.solubility("B", T)), pp = act / 2 + Math.sqrt(act * act / 4 + ni * ni);
       DB.stat("fe-o-ni", DP.sci(ni) + "<small>cm⁻³</small>");

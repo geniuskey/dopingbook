@@ -316,7 +316,7 @@
     const sq = (z) => Math.sqrt(z);
     const nD = [], pD = [];
     col.forEach(([z, v]) => { nD.push([sq(z), v > 0 ? v : NaN]); pD.push([sq(z), v < 0 ? -v : NaN]); });
-    DB.chart(ctx, bx, { x: [0, sq(H)], y: [1e14, 1e22], logY: true, xTicks: [0, 10, 50, 100, 300, 600, 1000, 1500].map(sq), xFmt: (v) => String(Math.round(v * v)), yTicks: [1e14, 1e16, 1e18, 1e20, 1e22],
+    DB.chart(ctx, bx, { x: [0, sq(H)], y: [1e14, 1e22], logY: true, xTicks: (narrow ? [0, 20, 100, 400, 1500] : [0, 10, 50, 100, 300, 600, 1000, 1500]).map(sq), xFmt: (v) => String(Math.round(v * v)), yTicks: [1e14, 1e16, 1e18, 1e20, 1e22],
       yFmt: (v) => "10" + String(Math.round(Math.log10(v))).replace(/\d/g, (c) => "⁰¹²³⁴⁵⁶⁷⁸⁹"[c]), xLabel: "깊이 (nm, 제곱근 눈금)", yLabel: "|N_D − N_A| (cm⁻³)",
       series: [{ data: nD, color: nC, width: 2.2 }, { data: pD, color: pC, width: 2.2 }] });
     // 수치

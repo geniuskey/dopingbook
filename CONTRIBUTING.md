@@ -44,7 +44,7 @@ EtchBook의 [CONTRIBUTING.md](https://github.com/geniuskey/etchbook/blob/main/CO
 
 - 타깃: 가상의 로직 칩 pMOS의 **소스·드레인 익스텐션**. 붕소, 도즈 1×10¹⁵ cm⁻², 배경(할로 + n웰) 1×10¹⁸ cm⁻³. 실제 회사·제품과 무관하다.
 - 규격(이 책이 정한 것): 접합 깊이 x_j ≤ 20 nm(배경 10¹⁸ 기준), 면저항 R_s ≤ 700 Ω/□.
-- 엔진 기준값(`DP.implant` + `DP.anneal`, 0.5 keV B 1e15, 배경 1e18): 주입 직후 x_j 약 12 nm. 스파이크 1050 °C: x_j 약 26 nm(TED 포함 약 32 nm), R_s 약 340~410 Ω/□. 플래시 1300 °C: x_j 약 13~23 nm, R_s 약 180~320 Ω/□. 퍼니스 900 °C 30분: x_j 100 nm 이상.
+- 엔진 기준값(`DP.implant` + `DP.anneal`, 0.5 keV B 1e15, 배경 1e18): 주입 직후 x_j 약 12.5 nm(비정질), 결정 7°/22°면 약 24 nm(채널링). Ge PAI 10 keV 1e15 → 비정질 약 16 nm. PAI 포함 스파이크 1050 °C: TED 없음 약 27 nm, TED 약 37 nm, R_s 약 245 Ω/□. 플래시 1300 °C: TED 약 17.5 nm / 233 Ω/□, 탄소(TED 원천 1/4) 약 13.9 nm / 291 Ω/□. 레이저 1350 °C: 약 12.8 nm / 320 Ω/□. 최종 DB-20 = Ge PAI + C + B 0.5 keV + 플래시 1300 °C.
 
 | 장 | 이 장에서 다루는 것 |
 |---|---|
