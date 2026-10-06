@@ -293,14 +293,15 @@
     for (let i = 0; i < xs.length; i++) e[i] = dose * fn * E * 1000 * g[i] * 1e7; // eV/cm³
     return { xs, e, fn, r };
   };
-  /** 비정질화 문턱 에너지 밀도(eV/cm³). 실온 기준 대표값 6e23. 가벼운 이온은 동적 회복으로 사실상 더 높다. */
+  /** 비정질화 문턱(핵 에너지 밀도, eV/cm³). 실온 문턱 도즈가 대표 문헌 범위(As·Ge 10¹⁴ cm⁻² 안팎, Si 수×10¹⁴, B 10¹⁶ 이상)에 들도록 맞춘 교육용 값.
+   *  가벼운 이온은 동적 회복으로 사실상 더 높다. */
   DP.amorphThreshold = function (ion, Tsub) {
     const I = DP.ION[ion]; const M = I.alias ? 49 : I.M;
     const dyn = Math.min(1, Math.pow(M / 28, 2.5));
     const T = Tsub == null ? 25 : Tsub;
     // 기판 온도가 높을수록 동적 회복이 커진다(교육용 지수 근사)
     const temp = Math.exp((T - 25) / 90);
-    return (6e23 / dyn) * temp;
+    return (1.5e24 / dyn) * temp;
   };
 
   /* ------------------------------------------------------------ 채널링 */
