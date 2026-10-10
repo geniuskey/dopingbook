@@ -203,7 +203,14 @@
       phi += dphi; th = a0 + phi;
       x = cx + r * Math.sin(th); y = cy - r * Math.cos(th);
       const rad = Math.hypot(x - 0, y - R0);
-      if (y >= R0 && x > 0) break;
+      if (y >= R0 && x > 0) {
+        // Clip the circular orbit exactly at the magnet exit plane.
+        x = cx + Math.sqrt(Math.max(0, r * r - (cy - R0) ** 2));
+        y = R0; th = Math.atan2(x - cx, cy - R0);
+        if (x < 0 || Math.abs(x - R0) > TUBE) { hit = true; break; }
+        pts.push([x, y]);
+        break;
+      }
       if (x < 0 || Math.abs(rad - R0) > TUBE) { hit = true; break; }
       pts.push([x, y]);
     }

@@ -209,22 +209,23 @@
       const mu = Array.from(xs, (x, i) => DP.mobility(tp, act[i] + BG));
       const cum = DP.sheetCumulative(xs, act, BG, tp);
       const G = (cum.find((c) => c[0] >= xj) || cum[cum.length - 1])[1];
+      const hasLayer = Number.isFinite(G) && G > 0;
       const ph = (h - 30 - 40) / 3;
       const col = tp === "n" ? DB.color("n-type") : DB.color("p-type");
       const b1 = { x: 66, y: 10, w: w - 66 - 14, h: ph - 8 }, b2 = { x: 66, y: 10 + ph + 4, w: b1.w, h: ph - 8 }, b3 = { x: 66, y: 10 + 2 * ph + 8, w: b1.w, h: ph - 8 };
       const vl = [{ x: xj, color: P.accent, label: "x_j" }];
       DB.chart(ctx, b1, { x: [0, xmax], y: [1e17, 1e22], logY: true, xTicks: [], yTicks: [1e18, 1e20, 1e22], yFmt: (v) => "10" + sup(Math.round(Math.log10(v))), yLabel: "활성 N", series: [{ data: Array.from(xs, (x, i) => [x, Math.max(act[i], 1.01e17)]), color: col, width: 2.4, fill: tp === "n" ? DB.color("n-soft") : DB.color("p-soft") }], hlines: [{ y: BG, color: P.faint, label: "바탕" }], vlines: vl });
       DB.chart(ctx, b2, { x: [0, xmax], y: [0, tp === "n" ? 1000 : 400], xTicks: [], yLabel: "μ (cm²/Vs)", series: [{ data: Array.from(xs, (x, i) => [x, mu[i]]), color: P.accent2, width: 2.2 }], vlines: vl });
-      DB.chart(ctx, b3, { x: [0, xmax], y: [0, 1], xLabel: "깊이 (nm)", yLabel: "누적 G ÷ 전체", series: [{ data: cum.map(([x, g]) => [x, Math.min(1, g / G)]), color: P.accent, width: 2.4 }], hlines: [{ y: 0.5, color: P.faint }], vlines: vl });
-      const Rs = 1 / G;
-      let half = 0; for (const [x, g] of cum) if (g >= G / 2) { half = x; break; }
+      DB.chart(ctx, b3, { x: [0, xmax], y: [0, 1], xLabel: "깊이 (nm)", yLabel: "누적 G ÷ 전체", series: [{ data: cum.map(([x, g]) => [x, hasLayer ? Math.min(1, g / G) : 0]), color: P.accent, width: 2.4 }], hlines: [{ y: 0.5, color: P.faint }], vlines: vl });
+      const Rs = hasLayer ? 1 / G : null;
+      let half = 0; for (const [x, g] of cum) if (hasLayer && g >= G / 2) { half = x; break; }
       const dx = (xs[1] - xs[0]) * 1e-7; let dose = 0, mw = 0;
       for (let i = 0; i < xs.length && xs[i] <= xj; i++) { const n = Math.max(0, act[i] - BG); dose += n * dx; mw += n * mu[i] * dx; }
-      DB.stat("rs-o-r", (Rs < 1e4 ? Rs.toFixed(0) : DP.sci(Rs)) + "<small>Ω/□</small>");
+      DB.stat("rs-o-r", hasLayer ? (Rs < 1e4 ? Rs.toFixed(0) : DP.sci(Rs)) + "<small>Ω/□</small>" : "유효 도핑층 없음");
       DB.stat("rs-o-d", DP.sci(dose) + "<small>cm⁻²</small>");
-      DB.stat("rs-o-m", (mw / dose).toFixed(0) + "<small>cm²/V·s</small>");
-      DB.stat("rs-o-v", (Rs * 1e-3 / 4.532 * 1000).toPrecision(3) + "<small>mV</small>");
-      DB.stat("rs-o-h", nm(half) + "<small>nm</small>");
+      DB.stat("rs-o-m", dose > 0 ? (mw / dose).toFixed(0) + "<small>cm²/V·s</small>" : "산출 불가");
+      DB.stat("rs-o-v", hasLayer ? (Rs * 1e-3 / 4.532 * 1000).toPrecision(3) + "<small>mV</small>" : "산출 불가");
+      DB.stat("rs-o-h", hasLayer ? nm(half) + "<small>nm</small>" : "산출 불가");
     }, { aspect: 0.8, minHeight: 380, maxHeight: 520 });
     function draw() { cv.redraw(); }
   })();

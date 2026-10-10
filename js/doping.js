@@ -503,7 +503,7 @@
       for (let j = 0; j < n; j++) {
         const act = Math.min(c[j], Math.max(L, Lmeta));
         const net = Math.max(0, act - bg);
-        const r = o.fermi === false ? 1 : net / 2 + Math.sqrt((net * net) / 4 + nI * nI);
+        const r = o.fermi === false ? nI : net / 2 + Math.sqrt((net * net) / 4 + nI * nI);
         const mob = xs[j] < aDepth ? 0 : c[j] > 0 ? act / c[j] : 1;
         Dv[j] = DP.D(dop, T, r / nI) * (1 + S) * mob;
       }
