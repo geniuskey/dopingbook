@@ -514,3 +514,8 @@ svg .lbl-n { fill: var(--n-type); font-family: var(--font); font-size: 14px; fon
 /* 데모 아래 한 줄: 이 그림이 어떤 근사인지 (실제 시뮬레이터 결과로 오해하지 않도록) */
 .sim-note.model { font-size: 13px; padding-top: 8px; padding-bottom: 10px; border-top: 1px dashed var(--border); }
 .sim-note.model::before { content: "근사 모델 · "; font-weight: 700; color: var(--accent); }
+
+/* Shareable simulator anchor links */
+.sim-link { margin-left: auto; flex: 0 0 auto; font: 12px var(--mono); color: var(--text-faint); }
+.sim-link:hover, .sim-link:focus-visible { color: var(--accent); text-decoration: none; }
+.sim { scroll-margin-top: 1rem; }
